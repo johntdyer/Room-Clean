@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vxml version="2.1">
+	<form id="Form1">
+		<script>
+			 var returnValue = new Array();
+			function stringToArray(str){
+		 		var regExp = /\s+/g; 
+				str = str.replace(regExp, "")
+				returnValue = str.split('#');
+				return returnValue;
+			}
+		</script>
+		<var name="roomNumbers" expr="new Array()"/>
+		<var name="returnDataVar" expr="new XML()"/>
+		<var name="API_URL" expr="'http://localhost/roomClean/rand.php'"/>
+		<property name="inputmodes" value="dtmf"/>
+		<!-- voice is other option -->
+		<property name="termchar" value="*"/>
+		<!-- Default is # -->
+		<field name="getNumber">
+			<grammar xmlns="http://www.w3.org/2001/06/grammar" mode="dtmf" root="dtmf_entry" version="1.0" xml:lang="en-US">
+				<rule id="dtmf_entry" scope="public">
+					<one-of>
+						<item repeat="1-">
+							<ruleref uri="#digit"/>
+						</item>
+					</one-of>
+				</rule>
+				<rule id="digit">
+					<one-of>
+						<item>0</item>
+						<item>1</item>
+						<item>2</item>
+						<item>3</item>
+						<item>4</item>
+						<item>5</item>
+						<item>6</item>
+						<item>7</item>
+						<item>8</item>
+						<item>9</item>
+						<item>#</item>
+					</one-of>
+				</rule>
+			</grammar>
+			<noinput>
+				<prompt> Sorry, I didn't hear anything</prompt>
+				<log expr="'@@@@: REPROMPT'"/>
+				<reprompt/>
+			</noinput>
+			<nomatch>
+				<prompt> That is not what I was expecting</prompt>
+				<log expr="'@@@@: NO MATCH'"/>
+				<reprompt/>
+			</nomatch>
+			<block>
+				<prompt>Please give me your room number</prompt>
+			</block>
+			<filled>
+				<log expr="'@@@@ ' + getNumber"/>
+				<assign name="roomNumbers" expr="stringToArray(getNumber)"/>
+				<foreach item="numbers" array="roomNumbers">
+					<log expr="'@@@@ ' + numbers"/>
+				</foreach>
+			</filled>
+		</field>
+	</form>
+	<!--
+ <form id="Form1">
+		<block>
+			<log expr="'@@@@[SENDING MESSAGE'"/>
+			<var name="smsMsgBody" expr="'omg you are going to get a ticket'"/>
+			<data name="returnDataVar" srcexpr="API_URL" namelist="token action smsNumber smsMsgBody" method="get" ecmaxmltype="e4x"/>
+			<if cond="returnDataVar.success=true">
+				<log expr="'@@@@[ Token succesfully sent ]'"/>
+				<else/>
+				<log expr="'@@@@[ Token failed ]'"/>
+			</if>
+		</block>
+	</form>
+	-->
+</vxml>
