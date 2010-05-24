@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vxml version="2.1">
-	<form id="Form1">
+	<var name="roomNumbers" expr="new Array()"/>
+	<var name="returnDataVar" expr="new XML()"/>
+	<var name="API_URL" expr="'http://localhost/roomClean/utilities/logCatcher.php'"/>
+	<form id="main">
 		<script>
 			 var returnValue = new Array();
 			function stringToArray(str){
@@ -10,14 +13,12 @@
 				return returnValue;
 			}
 		</script>
-		<var name="roomNumbers" expr="new Array()"/>
-		<var name="returnDataVar" expr="new XML()"/>
-		<var name="API_URL" expr="'http://localhost/roomClean/rand.php'"/>
 		<property name="inputmodes" value="dtmf"/>
 		<!-- voice is other option -->
 		<property name="termchar" value="*"/>
 		<!-- Default is # -->
 		<field name="getNumber">
+		<prompt>Please key in the room numbers you have cleaned followed by the pound key <break/> once you are done please press the star key</prompt>
 			<grammar xmlns="http://www.w3.org/2001/06/grammar" mode="dtmf" root="dtmf_entry" version="1.0" xml:lang="en-US">
 				<rule id="dtmf_entry" scope="public">
 					<one-of>
@@ -61,21 +62,25 @@
 				<foreach item="numbers" array="roomNumbers">
 					<log expr="'@@@@ ' + numbers"/>
 				</foreach>
+				<goto next="#submit"/>
 			</filled>
 		</field>
 	</form>
-	<!--
- <form id="Form1">
+	<form id="submit">
 		<block>
-			<log expr="'@@@@[SENDING MESSAGE'"/>
-			<var name="smsMsgBody" expr="'omg you are going to get a ticket'"/>
-			<data name="returnDataVar" srcexpr="API_URL" namelist="token action smsNumber smsMsgBody" method="get" ecmaxmltype="e4x"/>
-			<if cond="returnDataVar.success=true">
-				<log expr="'@@@@[ Token succesfully sent ]'"/>
+			<log expr="'@@@@[SENDING MESSAGE]'"/>
+			<data name="returnDataVar" srcexpr="API_URL" namelist="roomNumbers" method="post" ecmaxmltype="e4x"/>
+			<log expr="'@@@@[ API RESPONSE ] ' + returnDataVar"/>
+			<if cond="returnDataVar.result=='success'">
+				<log expr="'@@@@[ Post succesfully sent ]'"/>
+				<prompt>Goodbye</prompt>
+				<disconnect/>
 				<else/>
-				<log expr="'@@@@[ Token failed ]'"/>
+				<log expr="'@@@@[ Post failed ]'"/>
+				<clear namelist="getNumber"/>
+				<prompt>There was an error with these rooms, please try again</prompt>
+				<goto next="#main"/>
 			</if>
 		</block>
 	</form>
-	-->
 </vxml>
