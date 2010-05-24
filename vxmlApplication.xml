@@ -73,7 +73,7 @@
 			<log expr="'@@@@[ API RESPONSE ] ' + returnDataVar"/>
 			<if cond="returnDataVar.result=='success'">
 				<log expr="'@@@@[ Post succesfully sent ]'"/>
-				<prompt>Goodbye</prompt>
+				<prompt><break/> Thank you, we have logged your work.  <break/>  Goodbye</prompt>
 				<disconnect/>
 				<else/>
 				<log expr="'@@@@[ Post failed ]'"/>
