@@ -7,6 +7,6 @@ Setup:
 
 Use:
 
-Key in room numbers (DTMF Only), delimited by #.  Once done the API will simulate a successful or failed DB update.  If failed it will prompt to re-input room numbers.  We also will log room numbers (CSV) for illustrative purposes.
+	Key in room numbers (DTMF Only), delimited by #.  Once done the API will simulate a successful or failed DB update.  If failed it will prompt to re-input room numbers.  We also will log room numbers (CSV) for illustrative purposes.
 
 
